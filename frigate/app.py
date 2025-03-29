@@ -75,6 +75,7 @@ from frigate.util.object import get_camera_regions_grid
 from frigate.version import VERSION
 from frigate.video import capture_camera, track_camera
 from frigate.watchdog import FrigateWatchdog
+from frigate.go2rtc.create_config import create_go2rtc_config
 
 logger = logging.getLogger(__name__)
 
