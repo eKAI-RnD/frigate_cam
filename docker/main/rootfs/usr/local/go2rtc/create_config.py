@@ -5,6 +5,7 @@ import os
 import shutil
 import sys
 from pathlib import Path
+import shutil
 
 from ruamel.yaml import YAML
 
@@ -110,16 +111,8 @@ else:
         )
 
 # ensure ffmpeg path is set correctly
-path = config.get("ffmpeg", {}).get("path", "default")
-if path == "default":
-    if shutil.which("ffmpeg") is None:
-        ffmpeg_path = f"/usr/lib/ffmpeg/{DEFAULT_FFMPEG_VERSION}/bin/ffmpeg"
-    else:
-        ffmpeg_path = "ffmpeg"
-elif path in INCLUDED_FFMPEG_VERSIONS:
-    ffmpeg_path = f"/usr/lib/ffmpeg/{path}/bin/ffmpeg"
-else:
-    ffmpeg_path = f"{path}/bin/ffmpeg"
+
+ffmpeg_path = shutil.which("ffmpeg")
 
 if go2rtc_config.get("ffmpeg") is None:
     go2rtc_config["ffmpeg"] = {"bin": ffmpeg_path}
@@ -173,5 +166,5 @@ if config.get("birdseye", {}).get("restream", False):
         go2rtc_config["streams"] = {"birdseye": ffmpeg_cmd}
 
 # Write go2rtc_config to /dev/shm/go2rtc.yaml
-with open("/dev/shm/go2rtc.yaml", "w") as f:
+with open("./config/go2rtc.yaml", "w") as f:
     yaml.dump(go2rtc_config, f)
