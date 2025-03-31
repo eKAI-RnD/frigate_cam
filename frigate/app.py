@@ -75,7 +75,7 @@ from frigate.util.object import get_camera_regions_grid
 from frigate.version import VERSION
 from frigate.video import capture_camera, track_camera
 from frigate.watchdog import FrigateWatchdog
-from frigate.go2rtc.create_config import create_go2rtc_config
+from frigate.go2rtc import create_config
 
 logger = logging.getLogger(__name__)
 
@@ -99,15 +99,22 @@ class FrigateApp:
         self.go2rtc_process = self.run_go2rtc()
         # self.nginx_process = self.run_nginx()
 
-    def run_go2rtc(self, config_path="./config/cam.yaml"):
+    def create_go2rtc_config(self):
+        """
+        Tạo file cấu hình go2rtc từ cấu hình Frigate.
+        """
+        # Tạo file cấu hình go2rtc
+        create_config.create_go2rtc_config()
+
+    def run_go2rtc(self, config_path="./config/go2rtc.yaml"):
         """
         Hàm chạy Frigate cùng với go2rtc trong một tiến trình nền.
         
         Args:
-            config_path (str): Đường dẫn đến file cấu hình của go2rtc (mặc định: config/cam.yaml)
+            config_path (str): Đường dẫn đến file cấu hình của go2rtc (mặc định: config/go2rtc.yaml)
         """
         # Khởi động go2rtc trong một tiến trình nền
-      
+        print(config_path)
         go2rtc_process = subprocess.Popen(
             ["go2rtc", "-c", config_path],
             stdout=subprocess.PIPE,
@@ -617,6 +624,7 @@ class FrigateApp:
     def start(self) -> None:
         logger.info(f"Starting Frigate ({VERSION})")
         # Ensure global state.
+        self.create_go2rtc_config()
         self.ensure_dirs()
 
         # Start frigate services.

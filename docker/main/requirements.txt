@@ -1,2 +1,4 @@
 scikit-build == 0.17.*
 nvidia-pyindex
+websockets==15.0.1
+imutils==0.5.4
