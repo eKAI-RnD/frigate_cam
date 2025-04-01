@@ -12,7 +12,7 @@ from pywebpush import WebPusher
 from frigate.comms.config_updater import ConfigSubscriber
 from frigate.comms.dispatcher import Communicator
 from frigate.config import FrigateConfig
-from frigate.const import CONFIG_DIR
+from frigate.const import CONFIG_DIR, BASE_DIR
 from frigate.models import User
 
 logger = logging.getLogger(__name__)
@@ -151,7 +151,7 @@ class WebPushClient(Communicator):  # type: ignore[misc]
         camera: str = payload["after"]["camera"]
         title = f"{', '.join(sorted_objects).replace('_', ' ').title()}{' was' if state == 'end' else ''} detected in {', '.join(payload['after']['data']['zones']).replace('_', ' ').title()}"
         message = f"Detected on {camera.replace('_', ' ').title()}"
-        image = f"{payload['after']['thumb_path'].replace('/media/frigate', '')}"
+        image = f"{payload['after']['thumb_path'].replace(BASE_DIR, '')}"
 
         # if event is ongoing open to live view otherwise open to recordings view
         direct_url = f"/review?id={reviewId}" if state == "end" else f"/#{camera}"
