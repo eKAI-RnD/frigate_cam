@@ -624,7 +624,7 @@ class FrigateApp:
     def start(self) -> None:
         logger.info(f"Starting Frigate ({VERSION})")
         # Ensure global state.
-        # self.create_go2rtc_config()
+        self.create_go2rtc_config()
         self.ensure_dirs()
 
         # Start frigate services.
