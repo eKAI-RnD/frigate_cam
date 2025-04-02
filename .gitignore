@@ -20,3 +20,4 @@ core
 .idea/*
 .ipynb_checkpoints
 media/*
+.env

@@ -73,7 +73,7 @@ def create_go2rtc_config():
 
     # go2rtc should listen on 8555 tcp & udp by default
     if not go2rtc_config["webrtc"].get("listen"):
-        go2rtc_config["webrtc"]["listen"] = ":8554"
+        go2rtc_config["webrtc"]["listen"] = ":8555"
 
     if not go2rtc_config["webrtc"].get("candidates", []):
         default_candidates = []
@@ -84,7 +84,7 @@ def create_go2rtc_config():
         if internal_candidate is not None:
             default_candidates.append(internal_candidate)
         # should set default stun server so webrtc can work
-        default_candidates.append("stun:8554")
+        default_candidates.append("stun:8555")
 
         go2rtc_config["webrtc"] = {"candidates": default_candidates}
     else:
