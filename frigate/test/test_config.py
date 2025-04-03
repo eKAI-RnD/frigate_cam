@@ -75,7 +75,7 @@ class TestConfig(unittest.TestCase):
             "detectors": {
                 "cpu": {
                     "type": "cpu",
-                    "model_path": "/cpu_model.tflite",
+                    "model_path": "./cpu_model.tflite",
                 },
                 "edgetpu": {
                     "type": "edgetpu",
@@ -104,7 +104,7 @@ class TestConfig(unittest.TestCase):
         assert frigate_config.detectors["openvino"].device is None
 
         assert frigate_config.model.path == "/etc/hosts"
-        assert frigate_config.detectors["cpu"].model.path == "/cpu_model.tflite"
+        assert frigate_config.detectors["cpu"].model.path == "./cpu_model.tflite"
         assert frigate_config.detectors["edgetpu"].model.path == "/edgetpu_model.tflite"
         assert frigate_config.detectors["openvino"].model.path == "/etc/hosts"
 

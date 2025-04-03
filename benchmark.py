@@ -13,7 +13,7 @@ from frigate.object_detection import (
 )
 
 my_frame = np.expand_dims(np.full((300, 300, 3), 1, np.uint8), axis=0)
-labels = load_labels("/labelmap.txt")
+labels = load_labels("./labelmap.txt")
 
 ######
 # Minimal same process runner
@@ -47,7 +47,7 @@ labels = load_labels("/labelmap.txt")
 
 def start(id, num_detections, detection_queue, event):
     object_detector = RemoteObjectDetector(
-        str(id), "/labelmap.txt", detection_queue, event
+        str(id), "./labelmap.txt", detection_queue, event
     )
     start = datetime.datetime.now().timestamp()
 

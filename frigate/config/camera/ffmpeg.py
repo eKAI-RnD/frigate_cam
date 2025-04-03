@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import Union
+import shutil
 
 from pydantic import Field, field_validator
 
@@ -69,22 +70,23 @@ class FfmpegConfig(FrigateBaseModel):
 
     @property
     def ffmpeg_path(self) -> str:
-        if self.path == "default":
-            return f"/usr/lib/ffmpeg/{DEFAULT_FFMPEG_VERSION}/bin/ffmpeg"
-        elif self.path in INCLUDED_FFMPEG_VERSIONS:
-            return f"/usr/lib/ffmpeg/{self.path}/bin/ffmpeg"
-        else:
-            return f"{self.path}/bin/ffmpeg"
+        # if self.path == "default":
+        #     return f"/usr/lib/ffmpeg/{DEFAULT_FFMPEG_VERSION}/bin/ffmpeg"
+        # elif self.path in INCLUDED_FFMPEG_VERSIONS:
+        #     return f"/usr/lib/ffmpeg/{self.path}/bin/ffmpeg"
+        # else:
+        #     return f"{self.path}/bin/ffmpeg"
+        return shutil.which("ffmpeg") 
 
     @property
     def ffprobe_path(self) -> str:
-        if self.path == "default":
-            return f"/usr/lib/ffmpeg/{DEFAULT_FFMPEG_VERSION}/bin/ffprobe"
-        elif self.path in INCLUDED_FFMPEG_VERSIONS:
-            return f"/usr/lib/ffmpeg/{self.path}/bin/ffprobe"
-        else:
-            return f"{self.path}/bin/ffprobe"
-
+        # if self.path == "default":
+        #     return f"/usr/lib/ffmpeg/{DEFAULT_FFMPEG_VERSION}/bin/ffprobe"
+        # elif self.path in INCLUDED_FFMPEG_VERSIONS:
+        #     return f"/usr/lib/ffmpeg/{self.path}/bin/ffprobe"
+        # else:
+        #     return f"{self.path}/bin/ffprobe"
+        return shutil.which("ffprobe")
 
 class CameraRoleEnum(str, Enum):
     audio = "audio"

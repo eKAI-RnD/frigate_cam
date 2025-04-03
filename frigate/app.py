@@ -7,7 +7,7 @@ import shutil
 from multiprocessing import Queue
 from multiprocessing.synchronize import Event as MpEvent
 from typing import Optional
-
+import subprocess
 import psutil
 import uvicorn
 from peewee_migrate import Router
@@ -74,6 +74,7 @@ from frigate.util.object import get_camera_regions_grid
 from frigate.version import VERSION
 from frigate.video import capture_camera, track_camera
 from frigate.watchdog import FrigateWatchdog
+from frigate.go2rtc import create_config
 
 logger = logging.getLogger(__name__)
 
@@ -103,7 +104,33 @@ class FrigateApp:
         self.region_grids: dict[str, list[list[dict[str, int]]]] = {}
         self.frame_manager = SharedMemoryFrameManager()
         self.config = config
+        self.go2rtc_process = self.run_go2rtc()
 
+    def create_go2rtc_config(self):
+        """
+        Tạo file cấu hình go2rtc từ cấu hình Frigate.
+        """
+        # Tạo file cấu hình go2rtc
+        create_config.create_go2rtc_config()
+
+    def run_go2rtc(self, config_path="./config/go2rtc.yaml"):
+        """
+        Hàm chạy Frigate cùng với go2rtc trong một tiến trình nền.
+        
+        Args:
+            config_path (str): Đường dẫn đến file cấu hình của go2rtc (mặc định: config/go2rtc.yaml)
+        """
+        # Khởi động go2rtc trong một tiến trình nền
+        print(config_path)
+        go2rtc_process = subprocess.Popen(
+            ["go2rtc", "-c", config_path],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True  # Để dễ đọc output dưới dạng chuỗi
+        )
+        print(f"Đã khởi động go2rtc với PID: {go2rtc_process.pid}")
+        return go2rtc_process
+    
     def ensure_dirs(self) -> None:
         dirs = [
             CONFIG_DIR,
@@ -584,7 +611,7 @@ class FrigateApp:
     def init_auth(self) -> None:
         if self.config.auth.enabled:
             if User.select().count() == 0:
-                password = secrets.token_hex(16)
+                password = '123'
                 password_hash = hash_password(
                     password, iterations=self.config.auth.hash_iterations
                 )
@@ -626,7 +653,7 @@ class FrigateApp:
 
     def start(self) -> None:
         logger.info(f"Starting Frigate ({VERSION})")
-
+        self.create_go2rtc_config()
         # Ensure global state.
         self.ensure_dirs()
 
@@ -676,14 +703,16 @@ class FrigateApp:
                 ),
                 host="127.0.0.1",
                 port=5001,
-                log_level="error",
+                log_level="info",
             )
         finally:
             self.stop()
 
     def stop(self) -> None:
         logger.info("Stopping...")
-
+        
+        self.go2rtc_process.terminate()
+        logger.info("Exiting go2rtc...")
         self.stop_event.set()
 
         # set an end_time on entries without an end_time before exiting

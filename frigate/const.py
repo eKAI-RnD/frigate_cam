@@ -1,11 +1,15 @@
 import os
 import re
+from dotenv import load_dotenv
 
-INSTALL_DIR = "/opt/frigate"
-CONFIG_DIR = "/config"
+# Load biến từ file .env
+load_dotenv()
+
+INSTALL_DIR = "./"
+CONFIG_DIR = "./config"
 DEFAULT_DB_PATH = f"{CONFIG_DIR}/frigate.db"
 MODEL_CACHE_DIR = f"{CONFIG_DIR}/model_cache"
-BASE_DIR = "/media/frigate"
+BASE_DIR = os.getenv("FRIGATE_BASE_DIR")
 CLIPS_DIR = f"{BASE_DIR}/clips"
 EXPORT_DIR = f"{BASE_DIR}/exports"
 FACE_DIR = f"{CLIPS_DIR}/faces"

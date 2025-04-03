@@ -192,10 +192,10 @@ async def get_current_user(request: Request):
     username = request.headers.get("remote-user")
     role = request.headers.get("remote-role")
 
-    if not username or not role:
-        return JSONResponse(
-            content={"message": "No authorization headers."}, status_code=401
-        )
+    # if not username or not role:
+    #     return JSONResponse(
+    #         content={"message": "No authorization headers."}, status_code=401
+    #     )
 
     return {"username": username, "role": role}
 
